@@ -547,13 +547,17 @@ static PyObject* _NmzQCone_internal(PyObject * args, PyObject* kwargs)
 
     map <InputType, vector< vector<NumberFieldElem> > > input;
     
-    PyDict_DelItemString(kwargs,"number_field");
+    /* Do not delete entry of kwargs dict, as it might not
+       be owned by the cone constructor */
+    // PyDict_DelItemString(kwargs,"number_field");
     if(kwargs!=NULL){
         PyObject* keys = PyDict_Keys(kwargs);
         PyObject* values = PyDict_Values(kwargs);
         const int length = PyList_Size(keys);
         for(int i = 0; i<length; i++ ){
             string type_string = PyUnicodeToString( PyList_GetItem( keys, i ) );
+            if( type_string == "number_field" )
+                continue;
             PyObject* current_value = PyList_GetItem( values, i );
             if(current_value==Py_None)
                 continue;
